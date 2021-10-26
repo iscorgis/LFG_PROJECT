@@ -1,6 +1,7 @@
 from django.contrib.auth import logout
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
 
 from rest_framework import viewsets, generics, status, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -83,6 +84,18 @@ class PartiaUserGetInViewSet(viewsets.ModelViewSet):
     serializer_class = PartiaUserSerializer
     permission_classes = (permissions.IsAuthenticated)
 
+'''
+class x(viewsets.ModelViewSet):
+    queryset = Partia_User.objects.all()
+    serializer_class = PartiaUserSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        pu = self.get_object()
+        #doctor.is_active = False
+        #doctor.save()
+        return Response(data='delete success')
+'''
+
 class PartiaUserGetOutViewSet(viewsets.ModelViewSet):
 
     http_method_names = ["delete"]
@@ -102,29 +115,49 @@ class PartiaUserGetOutViewSet(viewsets.ModelViewSet):
 class ChatListViewSet(viewsets.ModelViewSet):
 
     http_method_names = ["get"]
-    #queryset = Chat.objects.all()
     serializer_class = ChatSerializer
+    permission_classes = permissions.IsAuthenticated
 
-    #filtrar por partia - chat comun
+    #Sobreescribimos el metodo std para filtrar solo los msg de una determinada sala de chat
     def get_queryset(self):
-        """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
-        """
         queryset = Chat.objects.all()
         id_partia = self.request.query_params.get('id_partia')
         if id_partia is not None:
             queryset = queryset.filter(partia=id_partia)
-        return queryset
-        #http://127.0.0.1:8000/chatlist/?id_partia=2
+            return queryset
+            #http://127.0.0.1:8000/chatlist/?id_partia=1
 
-class ChatCreateViewSet(viewsets.ModelViewSet):
+class ChatSendMsgViewSet(viewsets.ModelViewSet):
+    #curl -X POST -d "comment=a&partia=1&user=1"  http://127.0.0.1:8000/SendChatMsg/
 
     http_method_names = ["post"]
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
+    #permission_classes = [permissions.IsAuthenticated]
 
-class ChatEditViewSet(viewsets.ModelViewSet):
+    def perform_create(self, serializer):
+        request = serializer.context['request']
+        #serializer.save(comment = "ABc")
+        serializer.save(user = self.request.user)
+
+    #def create(self, request, *args, **kwargs):
+
+        #chat_message = self.get_object()
+        #chat_message.partia = request.data['partia']
+        #chat_message.user = request.data['user']
+        #chat_message.comment = request.data['comment']
+        #chat_message.save()
+
+        #print(request.data['partia'])
+        #print(request.data['user'])
+        #print(request.data['comment'])
+        #print(args)
+        #print(kwargs) - es para el queryset
+        #return Response(data='create success')
+        #request.data['user'] = 2
+        #return super(ChatSendMsgViewSet, self).create(request, *args, **kwargs)
+
+class ChatEditMsgViewSet(viewsets.ModelViewSet):
 
     http_method_names = ["put","delete"]
     queryset = Chat.objects.all()
