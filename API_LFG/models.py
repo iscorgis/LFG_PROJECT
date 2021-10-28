@@ -32,7 +32,12 @@ class Chat(models.Model):
     chat_name       = models.CharField(max_length=50, default=random_string)
     comment         = models.CharField(max_length=300)
 
-#Model to store profile user data
-
-
-
+#Model to save the user personal profile data
+class User_profile(models.Model):
+    user            = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    nick            = models.CharField(max_length=25)
+    email           = models.EmailField()
+    steam_id        = models.URLField()
+    epic_id         = models.URLField()
+    profile_img     = models.ImageField()
+    description     = models.CharField(max_length=300)

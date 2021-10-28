@@ -3,10 +3,8 @@ from rest_framework import serializers, permissions
 from rest_framework.authtoken.admin import User
 from rest_framework.views import APIView
 
-from .models import Videogame
-from .models import Partia
-from .models import Chat
-from .models import Partia_User
+from .models import Videogame, Partia, Chat, Partia_User, User_profile
+
 
 class VideogameSerializer(serializers.ModelSerializer):
 
@@ -36,9 +34,14 @@ class ChatSerializer(serializers.ModelSerializer):
         model = Chat
         fields = '__all__'
 
-
 class PartiaVGSerializer (serializers.ModelSerializer):
 
     class Meta:
         model = Partia
+        fields = '__all__'
+
+class UserProfileSerializer (serializers.ModelSerializer):
+
+    class Meta:
+        model = User_profile
         fields = '__all__'
