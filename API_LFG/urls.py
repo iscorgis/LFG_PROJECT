@@ -10,9 +10,11 @@ router.register(r'partia', views.PartiaViewSet, 'partia')
 router.register(r'partia_user', views.PartiaUserViewSet, 'partia_user')
 #router.register(r'get_in', views.PartiaUserGetInViewSet, 'get_out')
 #router.register(r'get_out', views.PartiaUserGetOutViewSet, 'get_in')
-#router.register(r'ChatEditViewSet', views.ChatEditViewSet, 'ChatEditViewSet')
+router.register(r'ChatEditMsg', views.ChatEditMsgViewSet)
 router.register(r'chatlist', views.ChatListViewSet, 'chatlist')
 router.register(r'SendChatMsg', views.ChatSendMsgViewSet, 'SendChatMsg')
+router.register(r'UserProfile', views.UserProfileViewSet, 'UserProfile')
+
 #router.register(r'find', views.FindPartiaByVideoGame, basename='abc')
 
 urlpatterns = [

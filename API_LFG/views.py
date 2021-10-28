@@ -7,16 +7,14 @@ from rest_framework import viewsets, generics, status, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
+from django.contrib.auth.models import User
 
 from .serializers import VideogameSerializer
 from .serializers import ChatSerializer
 from .serializers import PartiaSerializer
-from .serializers import PartiaUserSerializer,PartiaVGSerializer
+from .serializers import PartiaUserSerializer,PartiaVGSerializer, UserProfileSerializer
 
-from .models import Videogame
-from .models import Chat
-from .models import Partia
-from .models import Partia_User
+from .models import Videogame, Chat, Partia, Partia_User, User_profile
 
 from rest_framework.decorators import api_view, permission_classes, renderer_classes, authentication_classes, action
 from rest_framework.permissions import IsAuthenticated
@@ -116,7 +114,7 @@ class ChatListViewSet(viewsets.ModelViewSet):
 
     http_method_names = ["get"]
     serializer_class = ChatSerializer
-    permission_classes = permissions.IsAuthenticated
+    #permission_classes = permissions.IsAuthenticated
 
     #Sobreescribimos el metodo std para filtrar solo los msg de una determinada sala de chat
     def get_queryset(self):
@@ -133,11 +131,10 @@ class ChatSendMsgViewSet(viewsets.ModelViewSet):
     http_method_names = ["post"]
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
-    #permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         request = serializer.context['request']
-        #serializer.save(comment = "ABc")
         serializer.save(user = self.request.user)
 
     #def create(self, request, *args, **kwargs):
@@ -158,9 +155,26 @@ class ChatSendMsgViewSet(viewsets.ModelViewSet):
         #return super(ChatSendMsgViewSet, self).create(request, *args, **kwargs)
 
 class ChatEditMsgViewSet(viewsets.ModelViewSet):
+    #http://127.0.0.1:8000/ChatEditMsg/?id=1
+    http_method_names   = ["get","put","delete"]
+    queryset            = Chat.objects.all()
+    serializer_class    = ChatSerializer
+    #permission_classes  = permissions.IsAuthenticated
 
-    http_method_names = ["put","delete"]
-    queryset = Chat.objects.all()
-    serializer_class = ChatSerializer
+    def get_queryset(self):
+        queryset = Chat.objects.all()
+        user_id = self.request.user
+        id = self.request.query_params.get('id')
+        if id is not None:
+            queryset = queryset.filter(id=id, user_id=user_id)
+        return queryset
 
+class UserProfileViewSet(viewsets.ModelViewSet):
+    serializer_class    = UserProfileSerializer
 
+    def get_queryset(self):
+        """
+        Filter the queryset with the logged user
+        """
+        user = self.request.user
+        return User_profile.objects.filter(user=user)
