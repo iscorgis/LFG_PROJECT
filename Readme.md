@@ -42,7 +42,27 @@ The Api serve the endpoints to satify the next functional requirements:
 ├── data
 
 
+##Avaible Endpoints
+###Api_LFG Endpoints
+       /videogame',         #ALL CRUD OPERATIONS   
+       /partia',            #GET/POST OPERATIONS   
+       /partia_user',       #POST/DELETE OPERATIONS
+       /ChatEditMsg',       #GET/PUT/DELETE
+       /chatlist',          #GET OPERATIONS
+       /SendChatMsg         #POST OPERATIONS
+       /UserProfile         #ALL CRUD OPERATIONS
+
+###Third party endpoints
+  The Api use django rest framework and for this reason its going to be available 
+  all endpoints provided by DRF like login/logout/registration
 
 ## Running instructions && Package Requirements
+    To run this project you will need to install with pip the follow packages at least 
+    with the indicated version:
+        -Django             v.3.2.7
+        -Django-allauth     v.0.4.5
+        -Django-rest-auth   v.0.9.5
+        -Psycopg2           v.1.91
+        -Pillow             v.8.4.0
 
 

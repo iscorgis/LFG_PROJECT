@@ -12,7 +12,7 @@ class Videogame(models.Model):
     created_date    = models.DateTimeField(default=timezone.now)
     active          = models.BooleanField(default=True)
 
-
+#Partia/Group Model
 class Partia(models.Model):
     name            = models.CharField(max_length=50)
     description     = models.CharField(max_length=300)
@@ -20,7 +20,7 @@ class Partia(models.Model):
     creator         = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     videogame       = models.ForeignKey(Videogame,on_delete=models.CASCADE)
 
-#Loged Users in a Partia
+#Model to GetIN/GetOut in Partias by Users
 class Partia_User(models.Model):
     id_partia     = models.ForeignKey(Partia,on_delete=models.CASCADE)
     id_user       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE )

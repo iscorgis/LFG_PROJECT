@@ -27,6 +27,8 @@ from rest_framework.response import Response
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes([IsAuthenticated])
 class VideoGameViewSet(viewsets.ModelViewSet):
+
+        """View Used to store the VideoGame data that will be used to create partias/groups"""
         queryset = Videogame.objects.all().order_by('name')
         serializer_class = VideogameSerializer
 
@@ -38,7 +40,8 @@ class ChatViewSet(viewsets.ModelViewSet):
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes([IsAuthenticated])
 class PartiaViewSet(viewsets.ModelViewSet):
-    #View uset to create Partias/Groups
+
+    """View uset to create Partias/Groups"""
     http_method_names = ["get", "post"]
     serializer_class = PartiaSerializer
 
@@ -54,10 +57,12 @@ class PartiaViewSet(viewsets.ModelViewSet):
         return queryset
         #http://127.0.0.1:8000/partia/?vd=1
 
+
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes([IsAuthenticated])
 class PartiaUserViewSet(viewsets.ModelViewSet):
-    # View used by users to get in/out from partias/groups
+
+    """ View used by users to get in/out from partias/groups"""
     http_method_names = ["post", "delete"]
     serializer_class = PartiaUserSerializer
 
@@ -67,42 +72,8 @@ class PartiaUserViewSet(viewsets.ModelViewSet):
         if id_partia is not None:
             queryset = queryset.filter(id_partia=id_partia)
         return queryset
-    """
-    def perform_create(self, serializer):
-        serializer.save(id_user=self.request.user)
 
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def perform_destroy(self, instance):
-        instance.delete()
-    """
-"""
-class PartiaUserGetInViewSet(viewsets.ModelViewSet):
-
-    http_method_names = ["post"]
-    #queryset = Partia_User.objects.all()
-    serializer_class = PartiaUserSerializer
-    permission_classes = (permissions.IsAuthenticated)
-"""
-"""
-class PartiaUserGetOutViewSet(viewsets.ModelViewSet):
-
-    http_method_names = ["delete"]
-    #queryset = Partia_User.objects.all()
-    serializer_class = PartiaUserSerializer
-    permission_classes = (permissions.IsAuthenticated)
-
-    def get_queryset(self):
-        queryset = Partia_User.objects.all()
-        id_user = self.request.user
-        id_partia = self.request.query_params.get('id_partia')
-        if id_partia is not None:
-            queryset = queryset.filter(id_partia=id_partia, id_user=id_user)
-            return queryset
-"""
 @authentication_classes((SessionAuthentication, BasicAuthentication))
 @permission_classes([IsAuthenticated])
 class ChatListViewSet(viewsets.ModelViewSet):
@@ -110,7 +81,7 @@ class ChatListViewSet(viewsets.ModelViewSet):
     http_method_names = ["get"]
     serializer_class = ChatSerializer
 
-    #Overwrite the standard method to filter de objets by partia id
+    """Overwrite the standard method to filter de objets by partia id"""
     def get_queryset(self):
         queryset = Chat.objects.all()
         id_partia = self.request.query_params.get('id_partia')
@@ -122,6 +93,7 @@ class ChatListViewSet(viewsets.ModelViewSet):
 @permission_classes([IsAuthenticated])
 class ChatSendMsgViewSet(viewsets.ModelViewSet):
 
+    """View used to send messages by the logged user to the party/group"""
     http_method_names = ["post"]
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
@@ -135,6 +107,7 @@ class ChatSendMsgViewSet(viewsets.ModelViewSet):
 @permission_classes([IsAuthenticated])
 class ChatEditMsgViewSet(viewsets.ModelViewSet):
 
+    """View Used for Update or Delete messages that the logged user send to the party/group"""
     http_method_names   = ["get", "put", "delete"]
     queryset            = Chat.objects.all()
     serializer_class    = ChatSerializer
@@ -150,6 +123,7 @@ class ChatEditMsgViewSet(viewsets.ModelViewSet):
 @permission_classes([IsAuthenticated])
 class UserProfileViewSet(viewsets.ModelViewSet):
 
+    """View used for CRUD operations over user private profile"""
     serializer_class    = UserProfileSerializer
     def get_queryset(self):
         """
