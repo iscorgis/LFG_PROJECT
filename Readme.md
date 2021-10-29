@@ -38,9 +38,23 @@ The Api serve the endpoints to satify the next functional requirements:
 
 ## Repository overview
 
-├── README.md
-├── data
-
+├───LFG_PROJECT  
+│	├───API_LFG  
+│   │	│	├───admin  
+│   │	│	├───apps  
+│   │	│	├───serializers  
+│   │	│	├───models  
+│   │	│	├───test  
+│   │	│	├───urls  
+│   │	│	├───views  
+│	│   │  
+│	├───LFG_PROJECT    
+│   │	│	├───asgi    
+│   │	│	├───settings  
+│   │	│	├───urls  
+│   │	│	├───wsgi  
+│   │	│	├───views  
+│	├───templates  
 
 ##Avaible Endpoints
 ###Api_LFG Endpoints
