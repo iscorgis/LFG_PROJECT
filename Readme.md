@@ -59,13 +59,13 @@ The Api serve the endpoints to satify the next functional requirements:
 ##Avaible Endpoints  
 
 ###Api_LFG Endpoints  
-       /videogame',         #ALL CRUD OPERATIONS   
-       /partia',            #GET/POST OPERATIONS   
-       /partia_user',       #POST/DELETE OPERATIONS
-       /ChatEditMsg',       #GET/PUT/DELETE
-       /chatlist',          #GET OPERATIONS
-       /SendChatMsg         #POST OPERATIONS
-       /UserProfile         #ALL CRUD OPERATIONS
+       /videogame',         -ALL CRUD OPERATIONS   
+       /partia',            -GET/POST OPERATIONS   
+       /partia_user',       -POST/DELETE OPERATIONS  
+       /ChatEditMsg',       -GET/PUT/DELETE  
+       /chatlist',          -GET OPERATIONS  
+       /SendChatMsg         -POST OPERATIONS  
+       /UserProfile         -ALL CRUD OPERATIONS  
 
 ###Third party endpoints  
 
