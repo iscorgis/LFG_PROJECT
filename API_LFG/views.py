@@ -22,48 +22,52 @@ from django.http import JsonResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 
+
+# Authentication by session or basic http
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes([IsAuthenticated])
 class VideoGameViewSet(viewsets.ModelViewSet):
         queryset = Videogame.objects.all().order_by('name')
         serializer_class = VideogameSerializer
+
 
 class ChatViewSet(viewsets.ModelViewSet):
     queryset = Chat.objects.all().order_by('chat_name')
     serializer_class = ChatSerializer
 
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes([IsAuthenticated])
 class PartiaViewSet(viewsets.ModelViewSet):
+    #View uset to create Partias/Groups
+    http_method_names = ["get", "post"]
     serializer_class = PartiaSerializer
 
-    #def get_queryset(self):
-    #    return Partia.objects.filter(videogame=1)
     def get_queryset(self):
         """
-        Optionally restricts the returned purchases to a given user,
-        by filtering against a `username` query parameter in the URL.
+        Optionally restricts the returned partias to a given videogame,
+        by filtering against a `videogame` query parameter in the URL.
         """
         queryset = Partia.objects.all()
         vd = self.request.query_params.get('vd')
-        print(self.request.query_params.getlist('vd'))
         if vd is not None:
             queryset = queryset.filter(videogame=vd)
         return queryset
         #http://127.0.0.1:8000/partia/?vd=1
 
-
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes([IsAuthenticated])
 class PartiaUserViewSet(viewsets.ModelViewSet):
-
-    http_method_names = ["get","post", "delete"]
-    #queryset = Partia_User.objects.all()
+    # View used by users to get in/out from partias/groups
+    http_method_names = ["post", "delete"]
     serializer_class = PartiaUserSerializer
-    #permission_classes = (permissions.IsAuthenticated)
 
     def get_queryset(self):
-        queryset = Partia_User.objects.all()
-        id_user = self.request.user
+        queryset = Partia_User.objects.all().filter(id_user=self.request.user)
         id_partia = self.request.query_params.get('id_partia')
         if id_partia is not None:
-            queryset = queryset.filter(id_partia=id_partia, id_user=id_user)
-            return queryset
-"""
+            queryset = queryset.filter(id_partia=id_partia)
+        return queryset
+    """
     def perform_create(self, serializer):
         serializer.save(id_user=self.request.user)
 
@@ -74,6 +78,7 @@ class PartiaUserViewSet(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         instance.delete()
+    """
 """
 class PartiaUserGetInViewSet(viewsets.ModelViewSet):
 
@@ -81,19 +86,8 @@ class PartiaUserGetInViewSet(viewsets.ModelViewSet):
     #queryset = Partia_User.objects.all()
     serializer_class = PartiaUserSerializer
     permission_classes = (permissions.IsAuthenticated)
-
-'''
-class x(viewsets.ModelViewSet):
-    queryset = Partia_User.objects.all()
-    serializer_class = PartiaUserSerializer
-
-    def destroy(self, request, *args, **kwargs):
-        pu = self.get_object()
-        #doctor.is_active = False
-        #doctor.save()
-        return Response(data='delete success')
-'''
-
+"""
+"""
 class PartiaUserGetOutViewSet(viewsets.ModelViewSet):
 
     http_method_names = ["delete"]
@@ -108,25 +102,25 @@ class PartiaUserGetOutViewSet(viewsets.ModelViewSet):
         if id_partia is not None:
             queryset = queryset.filter(id_partia=id_partia, id_user=id_user)
             return queryset
-
-
+"""
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes([IsAuthenticated])
 class ChatListViewSet(viewsets.ModelViewSet):
 
     http_method_names = ["get"]
     serializer_class = ChatSerializer
-    #permission_classes = permissions.IsAuthenticated
 
-    #Sobreescribimos el metodo std para filtrar solo los msg de una determinada sala de chat
+    #Overwrite the standard method to filter de objets by partia id
     def get_queryset(self):
         queryset = Chat.objects.all()
         id_partia = self.request.query_params.get('id_partia')
         if id_partia is not None:
             queryset = queryset.filter(partia=id_partia)
             return queryset
-            #http://127.0.0.1:8000/chatlist/?id_partia=1
 
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes([IsAuthenticated])
 class ChatSendMsgViewSet(viewsets.ModelViewSet):
-    #curl -X POST -d "comment=a&partia=1&user=1"  http://127.0.0.1:8000/SendChatMsg/
 
     http_method_names = ["post"]
     queryset = Chat.objects.all()
@@ -137,41 +131,26 @@ class ChatSendMsgViewSet(viewsets.ModelViewSet):
         request = serializer.context['request']
         serializer.save(user = self.request.user)
 
-    #def create(self, request, *args, **kwargs):
-
-        #chat_message = self.get_object()
-        #chat_message.partia = request.data['partia']
-        #chat_message.user = request.data['user']
-        #chat_message.comment = request.data['comment']
-        #chat_message.save()
-
-        #print(request.data['partia'])
-        #print(request.data['user'])
-        #print(request.data['comment'])
-        #print(args)
-        #print(kwargs) - es para el queryset
-        #return Response(data='create success')
-        #request.data['user'] = 2
-        #return super(ChatSendMsgViewSet, self).create(request, *args, **kwargs)
-
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes([IsAuthenticated])
 class ChatEditMsgViewSet(viewsets.ModelViewSet):
-    #http://127.0.0.1:8000/ChatEditMsg/?id=1
-    http_method_names   = ["get","put","delete"]
+
+    http_method_names   = ["get", "put", "delete"]
     queryset            = Chat.objects.all()
     serializer_class    = ChatSerializer
-    #permission_classes  = permissions.IsAuthenticated
 
     def get_queryset(self):
-        queryset = Chat.objects.all()
-        user_id = self.request.user
+        queryset = Chat.objects.all().filter(user_id = self.request.user)
         id = self.request.query_params.get('id')
         if id is not None:
-            queryset = queryset.filter(id=id, user_id=user_id)
+            queryset = queryset.filter(id=id)
         return queryset
 
+@authentication_classes((SessionAuthentication, BasicAuthentication))
+@permission_classes([IsAuthenticated])
 class UserProfileViewSet(viewsets.ModelViewSet):
-    serializer_class    = UserProfileSerializer
 
+    serializer_class    = UserProfileSerializer
     def get_queryset(self):
         """
         Filter the queryset with the logged user
