@@ -56,9 +56,9 @@ The Api serve the endpoints to satify the next functional requirements:
 │   │	│	├───views  
 │	├───templates  
 
-##Avaible Endpoints  
+## Avaible Endpoints  
 
-###Api_LFG Endpoints  
+### Api_LFG Endpoints  
        /videogame',         -ALL CRUD OPERATIONS   
        /partia',            -GET/POST OPERATIONS   
        /partia_user',       -POST/DELETE OPERATIONS  
@@ -67,7 +67,7 @@ The Api serve the endpoints to satify the next functional requirements:
        /SendChatMsg         -POST OPERATIONS  
        /UserProfile         -ALL CRUD OPERATIONS  
 
-###Third party endpoints  
+### Third party endpoints  
 
   The Api use django rest framework and for this reason its going to be available 
   all endpoints provided by DRF like login/logout/registration
